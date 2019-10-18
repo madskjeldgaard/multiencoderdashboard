@@ -22,10 +22,10 @@
 	*/
 	{ |numPanels=1, closeAble=false|
 		// Gui object
-		var window, panel, makePanel;
+		var panel, makePanel;
+		var finalObjDict;
 
-
-		makePanel = {|window, numTargetSections=4, defaultport=1234|
+		makePanel = {|window, numTargetSections=4, defaultport=1234, panelNum|
 
 			// Functions
 			var sections;
@@ -64,7 +64,7 @@
 				objDict[\netaddr].sendMsg("/MultiEncoder/%%".format(target, sourcenum), sendVal);
 			};
 
-			sendToSourceNum = {|inval, section, sourcenum|
+			sendToSourceNum = {|inval=0.0, section, sourcenum|
 				var modTarget = section[\modTarget].item;
 				var selected = section[\selectedSources].item;
 				var numSrcs = objDict[\main][\numSources].value.asInteger;
@@ -92,7 +92,7 @@
 			// lfo's data is picked up by this callback function
 			makeOscFuncs = { |numProxies, sectionNum, section|
 				var paths = numProxies.collect{|proxnum|
-					"/reply/%_sec%_prox%".format("lfo", sectionNum, proxnum).asSymbol;
+					"/reply/panel%_%_sec%_prox%".format(panelNum, "lfo", sectionNum, proxnum).asSymbol;
 				};
 				var of = numProxies.collect{|proxnum|
 					OSCFunc({|msg ... args|
@@ -128,7 +128,7 @@
 				section[\lfo] = np;
 			};
 
-			changeLfoSource = {|lfotype, numSources, section|
+			changeLfoSource = {|lfotype="none", numSources=8, section|
 				var sendMessageEvery = 0.02; // Seconds
 
 				numSources.do{|sourcenum|
@@ -160,7 +160,7 @@
 						},
 						"none", {
 							// filter = {|in| in}; // Do not send OSC
-							{|staticValue| staticValue.linlin(0.0,1.0,-1.0,1.0)}
+							{|staticValue=0.0| DC.kr(staticValue.linlin(0.0,1.0,-1.0,1.0))}
 						}
 					);
 					section[\lfo][sourcenum].source = sourcefunc;
@@ -267,7 +267,7 @@
 				.items_(["all", "odd", "even"]);
 
 				thisData[\modType] = PopUpMenu(window)
-				.items_(["none", "saw", "tri", "sine", "random", "input"]);
+				.items_(["none", "saw", "tri", "sine", "random"/*, "input"*/]);
 
 				thisData[\scaleValueMultiSlider] = MultiSliderView(window)
 				.size_(8)
@@ -446,6 +446,8 @@
 					changeLfoSource.value(obj.item, numSources, section)
 				});
 
+				section[\modType].valueAction_(1);
+
 				// section[\modTarget];
 				// section[\selectedSources];
 				section[\scaleValueMultiSlider].action_({|obj|
@@ -506,26 +508,43 @@
 		objDict
 	};
 
-	s.doWhenBooted{
-		var layouts;
-		var finalObjDict;
+	s.waitForBoot{
+		fork{
+			var condition = Condition.new;
 
-		finalObjDict = numPanels.collect{|panelNum|
-			var thisPanel;
-			var thisWindow = Window(
-				"MultiEncoder Dashboard %".format(panelNum), 
-				bounds: Rect(0,0,1000,200)
-			)
-			.front
-			.userCanClose_(closeAble);
+			defer
+			{finalObjDict = numPanels.collect{|panelNum|
+				var thisPanel;
+				var thisWindow = Window(
+					"MultiEncoder Dashboard %".format(panelNum), 
+					bounds: Rect(0,0,1000,200)
+				)
+				.front
+				.userCanClose_(closeAble);
 
-			thisPanel = makePanel.value(thisWindow, defaultport: 1234+panelNum);
+				thisPanel = makePanel.value(thisWindow, defaultport: 1234+panelNum, panelNum: panelNum);
 
-			thisWindow.layout = thisPanel[\panelLayout];
+				thisWindow.layout = thisPanel[\panelLayout];
+
+				"%/%".format(panelNum, numPanels).postln;
+
+				if((panelNum+1) == numPanels, { "done!".postln; condition.unhang });
+
+				thisPanel;
+
+			};
 
 		};
+		
+		"hung!".postln;
 
-		finalObjDict;
+			condition.hang;
+			"unhung!".postln;
+
+			{MultiEncoderDashboard.addDashboard(finalObjDict)}.defer;
+			// finalObjDict;
+
+		}
 	}
 }
 )

@@ -1,8 +1,6 @@
 # MultiEncoderDashboard
 
-### Work in progress
-This quark works pretty well, but it is a work in progress at the moment.
-
+![multiencoderdashboard](two-multi.gif)
 
 ### A dashboard for controlling and manipulating IEM's MultiEncoder plugin for ambisonics
 
