@@ -7,7 +7,7 @@ MultiEncoderDashboard {
 
 	init { | numPanels=1, closeAble=false |
 		var dashboard;
-		quarkpath = Quark("MultiEncoderDashboard").localPath;
+		quarkpath = Quark("multiencoderdashboard").localPath;
 
 		dashboard = quarkpath +/+ "iem-encoder-dashboard.scd";
 		dashboard = dashboard.load;
