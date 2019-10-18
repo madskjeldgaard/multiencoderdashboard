@@ -2,7 +2,7 @@ MultiEncoderDashboard {
 	var quarkpath;
 
 	*new { | numPanels=1, closeAble=false|
-		^super.new.init( numPanels=1, closeAble=false );
+		^super.new.init( numPanels, closeAble);
 	}
 
 	init { | numPanels=1, closeAble=false |
