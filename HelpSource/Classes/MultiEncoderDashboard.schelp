@@ -9,38 +9,31 @@ A dashboard for controlling and manipulating IEM's MultiEncoder plugin for ambis
 CLASSMETHODS::
 
 METHOD:: new
-(describe method here)
 
-ARGUMENT:: arga
-(describe argument here)
+ARGUMENT:: numPanels
+The number of panels you want to create. The default is 1.
 
-ARGUMENT:: argb
-(describe argument here)
 
-ARGUMENT:: argc
-(describe argument here)
+ARGUMENT:: closeAble
+If false, keeps the window open (prevents accidentally shutting it down)
 
-returns:: (describe returnvalue here)
+returns:: IdentityDictionary
 
 
 INSTANCEMETHODS::
 
 METHOD:: init
-(describe method here)
 
-ARGUMENT:: arga
-(describe argument here)
+ARGUMENT:: numPanels
+The number of panels you want to create. The default is 1.
 
-ARGUMENT:: argb
-(describe argument here)
+ARGUMENT:: closeAble
+If false, keeps the window open (prevents accidentally shutting it down)
 
-ARGUMENT:: argc
-(describe argument here)
-
-returns:: (describe returnvalue here)
+returns:: IdentityDictionary
 
 EXAMPLES::
 
 code::
-(some example code)
+m = MultiEncoderDashboard.new(numPanels: 1, closeAble: false);
 ::
