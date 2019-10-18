@@ -510,23 +510,22 @@
 		var layouts;
 		var finalObjDict;
 
-		window = Window(
-			"MultiEncoder Dashboard", 
-			bounds: Rect(0,0,1000,200), 
-			scroll: true
-		)
-		.front
-		.userCanClose_(closeAble);
+		finalObjDict = numPanels.collect{|panelNum|
+			var thisPanel;
+			var thisWindow = Window(
+				"MultiEncoder Dashboard %".format(panelNum), 
+				bounds: Rect(0,0,1000,200)
+			)
+			.front
+			.userCanClose_(closeAble);
 
-		finalObjDict = numPanels.collect{|i| 
-			makePanel.value(window, defaultport: 1234+i)
+			thisPanel = makePanel.value(thisWindow, defaultport: 1234+panelNum);
+
+			thisWindow.layout = thisPanel[\panelLayout];
+
 		};
-
-		layouts = finalObjDict.collect{|panelObj| panelObj[\panelLayout]};
-
-		window.layout = VLayout(*layouts);
 
 		finalObjDict;
 	}
-};
+}.value
 )
