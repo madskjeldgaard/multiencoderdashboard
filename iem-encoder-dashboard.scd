@@ -526,9 +526,7 @@
 
 				thisWindow.layout = thisPanel[\panelLayout];
 
-				"%/%".format(panelNum, numPanels).postln;
-
-				if((panelNum+1) == numPanels, { "done!".postln; condition.unhang });
+				if((panelNum+1) == numPanels, { condition.unhang });
 
 				thisPanel;
 
@@ -536,10 +534,7 @@
 
 		};
 		
-		"hung!".postln;
-
 			condition.hang;
-			"unhung!".postln;
 
 			{MultiEncoderDashboard.addDashboard(finalObjDict)}.defer;
 			// finalObjDict;
