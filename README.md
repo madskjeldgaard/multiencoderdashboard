@@ -2,6 +2,7 @@
 
 ![multiencoderdashboard](two-multi.gif)
 
+## Work in progress...
 
 ### A dashboard for controlling and manipulating IEM's MultiEncoder plugin for ambisonics
 
