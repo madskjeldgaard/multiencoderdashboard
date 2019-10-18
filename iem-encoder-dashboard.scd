@@ -12,9 +12,8 @@
 	g[\sections][0][\lfo].source = { LFDNoise.kr }
 
 	TODO:
-	- Quarkify
 	- Sync between panels (but how???)
-	- Controller input
+	- Controller input (should this be outside of the scope of this project?)
 
 	KNOWN ISSUES:
 	- You can set more than one section to control the same thing (one set to odd, another to all for example), this causes problems
@@ -216,8 +215,8 @@
 						[makeLabel.("port"), s: 1],
 						[thisData[\targetPort], s: 2],
 						[makeLabel.("sources"), s: 1],
-						[thisData[\numSources], s: 2],
-						[nil, s:9],
+						[thisData[\numSources], s: 2],[nil, s:3],
+						[StaticText(window).string_("Dashboard %".format(panelNum)).font_(Font.sansSerif(24)), s:5], [nil, s:1],
 						[thisData[\randomizeBtn], s: 1], 
 						[thisData[\resetBtn], s: 1], 
 					),
@@ -446,7 +445,7 @@
 					changeLfoSource.value(obj.item, numSources, section)
 				});
 
-				section[\modType].valueAction_(1);
+				section[\modType].valueAction_(0);
 
 				// section[\modTarget];
 				// section[\selectedSources];
@@ -511,6 +510,8 @@
 	s.waitForBoot{
 		fork{
 			var condition = Condition.new;
+
+			s.sync;
 
 			defer
 			{finalObjDict = numPanels.collect{|panelNum|
