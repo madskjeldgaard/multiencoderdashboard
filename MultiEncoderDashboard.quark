@@ -1,7 +1,7 @@
 (
   name: "MultiEncoderDashboard",
   summary: "A dashboard for controlling and manipulating IEM's MultiEncoder plugin for ambisonics",
-  version: "0.1",
+  version: "0.2",
   schelp: "MultiEncoderDashboard.schelp",
   dependencies: [],
   license: "GNU GPL v3.0",
