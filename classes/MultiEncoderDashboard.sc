@@ -11,11 +11,11 @@ MultiEncoderDashboard {
 
 	}
 
-	*new { | numPanels=1, closeAble=false|
+	*new { | numPanels=1, closeAble=false, numSrcs=16|
 		^super.new.init( numPanels, closeAble);
 	}
 
-	init { | numPanels=1, closeAble=false |
+	init { | numPanels=1, closeAble=false, numSrcs=16 |
 		var dashboard;
 
 		dashboards = Array.new(numPanels);
@@ -25,7 +25,7 @@ MultiEncoderDashboard {
 		dashboard = quarkpath +/+ "iem-encoder-dashboard.scd";
 		dashboard = dashboard.load;
 
-		dashboard = dashboard.value(numPanels, closeAble);
+		dashboard = dashboard.value(numPanels, closeAble, numSrcs);
 
 		// dashboards = dashboard;
 

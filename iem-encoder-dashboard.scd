@@ -19,7 +19,7 @@
 	- You can set more than one section to control the same thing (one set to odd, another to all for example), this causes problems
 
 	*/
-	{ |numPanels=1, closeAble=false|
+	{ |numPanels=1, closeAble=false, numSrcs=16|
 		// Gui object
 		var panel, makePanel;
 		var finalObjDict;
@@ -127,8 +127,10 @@
 				section[\lfo] = np;
 			};
 
-			changeLfoSource = {|lfotype="none", numSources=8, section|
-				var sendMessageEvery = 0.02; // Seconds
+			changeLfoSource = {|lfotype="none", numSources, section|
+				var sendMessageEvery = 0.05; // Seconds
+
+				lfotype = if(lfotype.isNil, { "none" },{ lfotype });
 
 				numSources.do{|sourcenum|
 					var filter = {|in|
@@ -191,7 +193,7 @@
 				.clipLo_(1)
 				.clipHi_(64)
 				.decimals_(0)
-				.value_(8);
+				.value_(numSrcs);
 
 				thisData[\targetPort] = NumberBox(window)
 				.clipLo_(1)
@@ -269,25 +271,25 @@
 				.items_(["none", "saw", "tri", "sine", "random"/*, "input"*/]);
 
 				thisData[\scaleValueMultiSlider] = MultiSliderView(window)
-				.size_(8)
+				.size_(numSrcs)
 				.elasticMode_(1)
 				.drawLines_(true)
 				.thumbSize_(4)
-				.value_(1.dup(8));
+				.value_(1.dup(numSrcs));
 
 				thisData[\offsetValueMultiSlider] = MultiSliderView(window)
-				.size_(8)
+				.size_(numSrcs)
 				.elasticMode_(1)
 				.drawLines_(true)
 				.thumbSize_(4)
-				.value_(0.dup(8));
+				.value_(0.dup(numSrcs));
 
 				thisData[\freqValueMultiSlider] = MultiSliderView(window)
-				.size_(8)
+				.size_(numSrcs)
 				.elasticMode_(1)
 				.drawLines_(true)
 				.thumbSize_(4)
-				.value_(0.5.dup(8));
+				.value_(0.5.dup(numSrcs));
 
 				thisData[\layout] = VLayout(
 					// makeLabel.("target " ++ sectionNum).font_(Font.sansSerif(20, true)),
@@ -415,6 +417,7 @@
 					{section[\offsetValueMultiSlider].size_(val).valueAction_(0.0.dup(val))}.defer;
 					{section[\freqValueMultiSlider].size_(val).valueAction_(0.5.dup(val))}.defer;
 					{section[\modType].valueAction_(0)}.defer;
+					{changeLfoSource.value(section[\modType].item, val, section)}.defer;
 				}
 			});
 
