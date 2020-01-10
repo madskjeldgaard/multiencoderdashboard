@@ -42,12 +42,16 @@
 			scaleToParam = {|target, value, sourcenum, totalNumSrcs|
 				switch(target,
 					"elevation", {
-						value.linlin(0.0,1.0,-180.0,180.0);
+						value.linlin(0.0,1.0,-180,180);
 					},
 					"azimuth", {
-						var minval = sourcenum/totalNumSrcs;
-						var maxval = sourcenum+1/totalNumSrcs;
-						value.linlin(0.0,1.0,minval,maxval).linlin(0.0,1.0,-180.0,180.0);
+						// This slices the azimuth into slices of pizza: 
+						// var minval = sourcenum/totalNumSrcs;
+						// var maxval = sourcenum+1/totalNumSrcs;
+						// value.linlin(0.0,1.0,minval,maxval).linlin(0.0,1.0,-180.0,180.0);
+
+						value.linlin(0.0,1.0,-180,180);
+
 					},
 					"gain", {
 						value.linlin(0.0,1.0,-60.0,10.0);
@@ -96,7 +100,9 @@
 				var of = numProxies.collect{|proxnum|
 					OSCFunc({|msg ... args|
 						var val = msg[3];
+						val = val ? 0.0;
 						{ sendToSourceNum.value(val, section, proxnum) }.defer // Defer is needed because otherwise thread issues arise, but cannot remember why
+						// sendToSourceNum.value(val, section, proxnum)
 
 					}, paths[proxnum])
 				};
@@ -110,8 +116,6 @@
 				OSCFunc({|msg ... args|
 					var val = msg[3];
 					sendToSources.value(val, section)
-
-					// { section[\valueSlider].valueAction = val}.defer
 				}, section[\internalOscPath])
 			};
 
@@ -425,6 +429,7 @@
 			objDict[\sections].do{ |section|
 				var numSources = objDict[\main][\numSources].value.asInteger;
 
+				// Set the scale sliders
 				section[\freqSlider].action_({|obj|
 					{section[\freqValueMultiSlider].valueAction_(obj.value.dup(numSources))}.defer
 				});
@@ -432,7 +437,6 @@
 				section[\scaleSlider].action_({|obj|
 					{section[\scaleValueMultiSlider].valueAction_(obj.value.dup(numSources))}.defer
 				});
-
 
 				section[\offsetSlider].action_({|obj|
 					{section[\offsetValueMultiSlider].valueAction_(obj.value.dup(numSources))}.defer
@@ -476,8 +480,7 @@
 			section[\lfo].do{|lfo, lfonum| 
 				lfo.set(\f, section[\freqs][lfonum])	
 			}
-		}
-	);
+		});
 
 	section[\freqs] = 0.5.dup(numSources);
 }
